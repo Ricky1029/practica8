@@ -1,39 +1,25 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+name: Test and Build
 
-name: Python application
-
+# Este workflow se ejecutará cada vez que se realice un push a la rama "main"
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
 
+# Permisos para leer el contenido del repositorio, necesario para ejecutar las acciones de CI/CD
 permissions:
   contents: read
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v4
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v3
-      with:
-        python-version: "3.10"
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install flake8 pytest
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    - name: Lint with flake8
-      run: |
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
-        # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
-        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
-    - name: Test with pytest
-      run: |
-        pytest
+  test_and_build: # Nombre del trabajo
+    runs-on: ubuntu-latest # El trabajo se ejecutará en un entorno de Ubuntu
+    steps: # Pasos a seguir para ejecutar el trabajo
+      - uses: actions/checkout@v4
+      - name: Set up Python 3.11 # Configura el entorno de Python 3.11
+        uses: actions/setup-python@v3
+        with:
+          python-version: "3.11"
+      - name: Install dependencies # Instala las dependencias necesarias para ejecutar las pruebas
+        run: pip install -r requirements.txt
+      - name: Test with pytest # Ejecuta las pruebas utilizando pytest
+        working-directory: src # Directorio donde se encuentran las pruebas
+        run: pytest tests.py
